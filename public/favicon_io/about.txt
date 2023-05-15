@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Nokora
+- Font Author: Copyright 2019 The Nokora Project Authors (https://github.com/danhhong/Nokora)
+- Font Source: http://fonts.gstatic.com/s/nokora/v30/~CggKBk5va29yYSAAKgQIARgB.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
