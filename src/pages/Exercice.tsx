@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
-import { styled } from "@mui/material/styles";
-import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Editor from "@monaco-editor/react";
 import MenuItem from "@mui/material/MenuItem";
@@ -21,14 +19,6 @@ const Exercice = () => {
   const [language, setlanguage] = useState("html");
   const [exercice, setexercice] = useState<IExerciceModel[]>([]);
   const [badges, setbadges] = useState<IBadgesModel[]>();
-
-  const Item = styled(Paper)(({ theme }) => ({
-    backgroundColor: "#1A2027",
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: "center",
-    color: "fff",
-  }));
 
   const onChangeSelect = (event: any) => {
     setlanguage(event.target.value);
@@ -82,17 +72,17 @@ const Exercice = () => {
   }, [html, css, javascript]);
 
   return (
-    <Box sx={{ width: "100%", backgroundColor: "#1e1e1e" }}>
+    <Box sx={{ width: "100%", backgroundColor: "#1d1d1b", color: "white" }}>
       <Grid container spacing={1}>
         <Grid xs={1} md={1}>
-          <Item sx={{ height: "100%" }}>nav bar</Item>
+          nav bar
         </Grid>
         <Grid xs={11} md={11}>
           <Box sx={{ width: "100%" }}>
             <Grid container spacing={1}>
               <Grid xs={6}>
                 <Box sx={{ width: "100%" }}>
-                  <Item sx={{ height: "65vh" }}>
+                  <Box sx={{ height: "65vh" }}>
                     <iframe
                       srcDoc={srcDoc}
                       title="output"
@@ -101,7 +91,7 @@ const Exercice = () => {
                       width="100%"
                       height="100%"
                     />
-                  </Item>
+                  </Box>
                 </Box>
               </Grid>
               <Grid xs={6}>
@@ -110,14 +100,17 @@ const Exercice = () => {
                   sx={{
                     m: 1,
                     minWidth: 120,
-                    backgroundColor: "#1A2027",
+                    backgroundColor: "#db1144",
                     marginLeft: "2.5vh",
+                    marginTop: "2.5vh",
+                    borderRadius: "5px",
                   }}
                 >
                   <Select
                     value={language}
                     onChange={onChangeSelect}
                     label="Language"
+                    sx={{ color: "#ffffff", "&:after": { borderColor: "#ffffff" } }}
                   >
                     <MenuItem value={"html"}>HTML</MenuItem>
                     <MenuItem value={"css"}>CSS</MenuItem>
@@ -153,30 +146,41 @@ const Exercice = () => {
               </Grid>
               <Grid xs={6}>
                 <Box sx={{ width: "100%" }}>
-                  <Item sx={{ height: "35vh" }}>
+                  <Box sx={{ height: "35vh" }}>
                     <h1>Exercice</h1>
                     <p>{exercice[0]?.statement}</p>
-                  </Item>
+                  </Box>
                 </Box>
               </Grid>
               <Grid xs={6}>
                 <Box sx={{ width: "100%" }}>
-                  <Item sx={{ height: "35vh" }}>
+                  <Box sx={{ height: "35vh" }}>
                     <Grid container spacing={2}>
                       <Grid xs={6}>
                         {/* Nombre d"erxercice restant a faire */}
-                        <Item>
+                        <Box>
                           <h1>Nombre d'exercices</h1>
                           <p>{exercice.length}</p>
-                        </Item>
+                        </Box>
                       </Grid>
                       <Grid xs={6}>
-                        <Item>
-                          <Button variant="contained">Valider</Button>
-                        </Item>
+                        <Box>
+                          <Button variant="contained" sx={
+                            {
+                              backgroundColor: "#db1144",
+                              color: "#ffffff",
+                              marginTop: "2vh",
+                              '&:hover': {
+                                backgroundColor: "#ffffff",
+                                color: "#db1144"
+                              }
+                            }
+                            
+                          }>Valider</Button>
+                        </Box>
                       </Grid>
                     </Grid>
-                  </Item>
+                  </Box>
                 </Box>
               </Grid>
             </Grid>

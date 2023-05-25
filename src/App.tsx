@@ -7,6 +7,7 @@ import { Route, Routes } from 'react-router-dom';
 //PAGE
 import Exercice from './pages/Exercice';
 import Login from './pages/auth/Login';
+import Accueil from './pages/Accueil';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <React.StrictMode>
         <Routes>
           <Route path="/" element={<Login />} />
+          <Route path="/home" element={<Accueil />} />
           <Route path="/exercices/:badgeID" element={<Exercice />} />
         </Routes>
         </React.StrictMode>
