@@ -5,6 +5,7 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 
 //PAGE
+import Page from './components/Page';
 import Exercice from './pages/Exercice';
 import Login from './pages/auth/Login';
 import Accueil from './pages/Accueil';
@@ -16,7 +17,7 @@ function App() {
         <React.StrictMode>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Accueil />} />
+          <Route path="/home" element={<Page><Accueil/></Page>} />
           <Route path="/exercices/:badgeID" element={<Exercice />} />
         </Routes>
         </React.StrictMode>
