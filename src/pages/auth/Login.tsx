@@ -35,10 +35,10 @@ const Login = () => {
         localStorage.setItem("session", JSON.stringify(session));
         if (keycloak.hasRealmRole("formateur")) {
           localStorage.setItem("role", "formateur")
-          window.location.href = "/admin";
+          window.location.href = "/home";
         } else {
           localStorage.setItem("role", "user")
-          window.location.href = "/profil";
+          window.location.href = "/home";
         }
       } else {
         console.log("Session non existante");
@@ -47,10 +47,10 @@ const Login = () => {
         console.log(newSession);
         if (keycloak.hasRealmRole("formateur")) {
           localStorage.setItem("role", "formateur")
-          window.location.href = "/admin";
+          window.location.href = "/home";
         } else {
           localStorage.setItem("role", "user")
-          window.location.href = "/profil";
+          window.location.href = "/home";
         }
       }
     }
