@@ -46,8 +46,10 @@ const Exercice = () => {
       setbadges(badge);
     };
 
-    fetchExercices("640df69fe361f7749338fdfd").catch(console.error);
-    getBadge("640df69fe361f7749338fdfd").catch(console.error);
+    const url = window.location.href;
+    const id = url.substring(url.lastIndexOf("/") + 1);
+    fetchExercices(id).catch(console.error);
+    getBadge(id).catch(console.error);
     getAllBadges().catch(console.error);
   }, []);
 
