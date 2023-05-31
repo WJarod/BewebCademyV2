@@ -14,6 +14,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ISessionModel from "../model/ISessionModel";
 import IDraftModel from "../model/IDraftModel";
+import { useNavigate } from "react-router-dom";
 
 const Exercice = () => {
   const [srcDoc, setSrcDoc] = useState("");
@@ -29,10 +30,12 @@ const Exercice = () => {
   const [open, setOpen] = React.useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success" as AlertColor);
+  const navigate = useNavigate();
 
   let session: ISessionModel = JSON.parse(
     localStorage.getItem("session") || ""
   );
+
   let draft: IDraftModel = JSON.parse(localStorage.getItem("draft") || "");
 
   const onChangeSelect = (event: any) => {
@@ -162,7 +165,7 @@ const Exercice = () => {
                           },
                         }}
                         onClick={() => {
-                          window.location.href = "/home";
+                          navigate(-2);
                         }}
                       >
                         <ArrowBackIcon />

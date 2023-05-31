@@ -6,17 +6,20 @@ import Container from "@mui/material/Container";
 import LogoutIcon from '@mui/icons-material/Logout';
 import { useKeycloak } from "@react-keycloak/web";
 import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 
 const AppBarre = () => {
   const { keycloak, initialized } = useKeycloak();
-
+  const navigate = useNavigate();
+  
   const logout = () => {
     localStorage.clear()
     keycloak.logout().then(() => {
       keycloak.clearToken()
       })
-      
+      navigate(`/`);
+
   }
 
   return (

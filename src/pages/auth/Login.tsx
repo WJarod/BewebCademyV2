@@ -35,7 +35,7 @@ const Login = () => {
         localStorage.setItem("session", JSON.stringify(session));
         if (keycloak.hasRealmRole("formateur")) {
           localStorage.setItem("role", "formateur")
-          window.location.href = "/home";
+          window.location.href = "/admin";
         } else {
           localStorage.setItem("role", "user")
           window.location.href = "/home";
@@ -47,7 +47,7 @@ const Login = () => {
         console.log(newSession);
         if (keycloak.hasRealmRole("formateur")) {
           localStorage.setItem("role", "formateur")
-          window.location.href = "/home";
+          window.location.href = "/admin";
         } else {
           localStorage.setItem("role", "user")
           window.location.href = "/home";
