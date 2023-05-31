@@ -195,6 +195,27 @@ const Exercice = () => {
                       </Button>
                     </Box>
                   </Box>
+
+                  <Box sx={{ width: "100%", marginTop: "5vh" }}>
+                    <Box sx={{ height: "10vh" }}>
+                      <Button
+                        variant="contained"
+                        sx={{
+                          backgroundColor: "#db1144",
+                          color: "#ffffff",
+                          height: "10vh",
+                          width: "10vh",
+                          marginTop: "2vh",
+                          "&:hover": {
+                            backgroundColor: "#db1144",
+                            color: "#ffffff",
+                          },
+                        }}
+                      >
+                        Exercice {exercices.length}
+                      </Button>
+                    </Box>
+                  </Box>
                 </Grid>
               </Grid>
             </Box>
@@ -283,10 +304,8 @@ const Exercice = () => {
                   <Box sx={{ height: "35vh" }}>
                     <Grid container spacing={2}>
                       <Grid xs={6}>
-                        {/* Nombre d"erxercice restant a faire */}
                         <Box>
-                          <h1>Nombre d'exercices</h1>
-                          <p>{exercices.length - exercice.length}/{exercices.length}</p>
+                          <h1>Console log</h1>
                         </Box>
                       </Grid>
                       <Grid xs={6}>

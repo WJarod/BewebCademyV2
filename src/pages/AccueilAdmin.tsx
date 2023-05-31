@@ -8,12 +8,14 @@ import IUserModel from "../model/IUserModel";
 import ISessionModel from "../model/ISessionModel";
 import { getBadges } from "../services/badges-service";
 import { getUser, getUsers } from "../services/keycloak-service";
+import { getSessions } from "../services/session-service"
 import { Avatar, Badge, Button, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Accueil = () => {
+const AccueilAdmin = () => {
   const [badges, setBadges] = useState<IBadgesModel[]>([]);
   const [user, setUser] = useState<IUserModel>();
+  const [sessions,setSessions ] = useState<ISessionModel[]>([])
   const navigate = useNavigate();
 
   let session: ISessionModel = JSON.parse(
@@ -29,17 +31,23 @@ const Accueil = () => {
   }));
 
   useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user") || ""))
     getBadges().then((badges) => {
       setBadges(badges);
     });
-    getUsers().then((users) => {
-      setUser(users[1]);
-    });
+    getSessions().then((s) => {
+      setSessions(s);
+    })
   }, []);
 
   function handleClick(id: string) {
     console.log(id);
     navigate(`/exercices/${id}`);
+  }
+
+  function handleClickUser(id: string) {
+    console.log(id);
+    navigate(`/user/${id}`);
   }
 
   function checkBadge(badge: IBadgesModel) {
@@ -55,6 +63,33 @@ const Accueil = () => {
       <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={3}>
           <Grid xs={1}></Grid>
+          <Grid xs={3}>
+            <Item sx={{ height: "55vh" }}>
+              <h1>Utilisateur</h1>
+              <Grid
+                container
+                spacing={{ xs: 2, md: 3 }}
+                columns={{ xs: 4, sm: 8, md: 12 }}
+              >
+                {sessions.length === 0 ? (
+                  <CircularProgress sx={{ margin: "auto" }} />
+                ) : (
+                  sessions.map((_, index) => (
+                    <Grid xs={2} sm={4} md={4} key={index}>
+                      <>
+                      <Avatar
+                            sx={{ width: 56, height: 56, margin: "auto" }}
+                            onClick={() => handleClickUser(sessions[index].user.id)}
+                          >{sessions[index].user.firstName?.charAt(0).toUpperCase()}{" "}
+                          {sessions[index].user.lastName?.charAt(0).toUpperCase()}</Avatar>
+                        <p>{sessions[index].user.username}</p>
+                      </>
+                    </Grid>
+                  ))
+                )}
+              </Grid>
+            </Item>
+          </Grid>
           <Grid xs={4}>
             <Item sx={{ height: "55vh" }}>
               <h1>Profil</h1>
@@ -87,7 +122,7 @@ const Accueil = () => {
               </Button>
             </Item>
           </Grid>
-          <Grid xs={6}>
+          <Grid xs={3}>
             <Item sx={{ height: "55vh" }}>
               <h1>Badges</h1>
               <Grid
@@ -137,4 +172,4 @@ const Accueil = () => {
   );
 };
 
-export default Accueil;
+export default AccueilAdmin;

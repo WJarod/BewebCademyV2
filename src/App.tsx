@@ -9,6 +9,7 @@ import Page from './components/Page';
 import Exercice from './pages/Exercice';
 import Login from './pages/auth/Login';
 import Accueil from './pages/Accueil';
+import AccueilAdmin from './pages/AccueilAdmin';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<Page><Accueil/></Page>} />
+          <Route path='/admin' element={<Page><AccueilAdmin/></Page>} />
           <Route path="/exercices/:badgeID" element={<Exercice />} />
         </Routes>
         </React.StrictMode>
