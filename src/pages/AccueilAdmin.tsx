@@ -59,35 +59,12 @@ const AccueilAdmin = () => {
     setOpen(false);
   };
 
-  // const handleChange = (lang: ILanguageModel) => {
-  //   // setSelectLanguage(event.target.value as string);
-  //   console.log(lang)
-  //   selectLanguage.push(lang)
-  //   console.log(selectLanguage)
-  // };
-
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.checked)
-    console.log(event.target.value)
-    
     if(event.target.checked){
-      languages.find((l) => 
-        {
-          if(l !== undefined){
-            selectLanguage.push(l)
-          } 
-        }
-      )
+      languages.find((l) => l._id === event.target.value && selectLanguage.push(l))
     }else {
-      languages.find((l) => 
-        {
-          if(l !== undefined){
-            selectLanguage.filter(lang => lang._id === l._id)
-          } 
-        }
-      )
+      selectLanguage.find((l) => l._id === event.target.value && selectLanguage.splice(selectLanguage.indexOf(l), 1))
     }
-    console.log(selectLanguage)
   };
 
   const handleCloseInfo = (
@@ -127,12 +104,10 @@ const AccueilAdmin = () => {
   }, []);
 
   function handleClick(id: string) {
-    console.log(id);
     navigate(`/exercices/${id}`);
   }
 
   function handleClickUser(id: string) {
-    console.log(id);
     navigate(`/user/${id}`);
   }
 
@@ -147,18 +122,19 @@ const AccueilAdmin = () => {
   const onSubmit = async (data: any) => {
     setOpen(false);
     data.language = selectLanguage;
-    console.log(data);
     createBadge(data)
       .then((d) => {
-        console.log(d);
         setSeverity("success");
-        setMessage("Bravo, vous avez réussi l'exercice !");
+        setMessage("Le badge a bien été créé !");
         setOpenInfo(true);
+        getBadges().then((b) => {
+          badges.splice(0, badges.length)
+          setBadges(b);
+        });
       })
       .catch((e) => {
-        console.log(e);
         setSeverity("error");
-        setMessage("Bravo, vous avez réussi l'exercice !");
+        setMessage("Une erreur est survenue lors de la création du badge");
         setOpenInfo(true);
         setOpen(true);
       });
@@ -331,29 +307,14 @@ const AccueilAdmin = () => {
                         ))}
                       </Select>
                     </FormControl> */}
+                    <FormGroup>
                     {languages.map((_, index) => (
                           <FormControlLabel
                           control={<Checkbox onChange={handleChange} value={languages[index]._id}/>}
                           label={languages[index].name}
                         />
                         ))}
-                    <Autocomplete
-                      multiple
-                      onChange={(e, data: ILanguageModel[]) => {
-                        setSelectLanguage(data);
-                      }}
-                      sx={{ maxWidth: "100%", m: "auto" }}
-                      id="tags-outlined"
-                      options={languages}
-                      getOptionLabel={(option: ILanguageModel) => option.name}
-                      renderInput={(params: any) => (
-                        <TextField
-                          {...params}
-                          label="langages"
-                          placeholder="Language"
-                        />
-                      )}
-                    />
+                    </FormGroup>
                     <TextField
                       {...register("name")}
                       autoFocus
