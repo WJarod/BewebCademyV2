@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from "react";
 import Grid from "@mui/material/Unstable_Grid2";
 import Box from "@mui/material/Box";
-import InputLabel from "@mui/material/InputLabel";
 import { styled } from "@mui/material/styles";
 import Paper from "@mui/material/Paper";
 import IBadgesModel from "../model/IBadgesModel";
 import IUserModel from "../model/IUserModel";
 import ISessionModel from "../model/ISessionModel";
 import ILanguageModel from "../model/ILanguageModel";
-import { getBadges, createBadge } from "../services/badges-service";
-import { getUser, getUsers } from "../services/keycloak-service";
+import IExerciceModel from "../model/IExerciceModel";
+import { getBadges, createBadge, deleteBadge } from "../services/badges-service";
 import { getSessions } from "../services/session-service";
 import { getLanguages } from "../services/language-service";
-import Autocomplete from "@mui/material/Autocomplete";
+import { getExerciceByBadgeId, deleteExerciceById } from "../services/exercice-service";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Alert,
   AlertColor,
@@ -24,18 +24,20 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
-  FormControl,
   FormControlLabel,
   FormGroup,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
+  IconButton,
   Snackbar,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
   TextField,
 } from "@mui/material";
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const AccueilAdmin = () => {
@@ -44,8 +46,11 @@ const AccueilAdmin = () => {
   const [sessions, setSessions] = useState<ISessionModel[]>([]);
   const [languages, setLanguages] = useState<ILanguageModel[]>([]);
   const [selectLanguage, setSelectLanguage] = useState<ILanguageModel[]>([]);
+  const [exercices, setExercices] = useState<IExerciceModel[]>([]);
+  const [badgeID, setBadgeID] = useState("");
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
+  const [open2, setOpen2] = React.useState(false);
   const [openInfo, setOpenInfo] = React.useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success" as AlertColor);
@@ -55,15 +60,33 @@ const AccueilAdmin = () => {
     setOpen(true);
   };
 
+  const handleClickOpen2 = (badge: string) => {
+    setBadgeID(badge);
+    getExerciceByBadgeId(badge).then((e) => {
+      setExercices(e);
+    });
+    setOpen2(true);
+  };
+
+  const handleClose2 = () => {
+    setOpen2(false);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if(event.target.checked){
-      languages.find((l) => l._id === event.target.value && selectLanguage.push(l))
-    }else {
-      selectLanguage.find((l) => l._id === event.target.value && selectLanguage.splice(selectLanguage.indexOf(l), 1))
+    if (event.target.checked) {
+      languages.find(
+        (l) => l._id === event.target.value && selectLanguage.push(l)
+      );
+    } else {
+      selectLanguage.find(
+        (l) =>
+          l._id === event.target.value &&
+          selectLanguage.splice(selectLanguage.indexOf(l), 1)
+      );
     }
   };
 
@@ -103,10 +126,6 @@ const AccueilAdmin = () => {
     });
   }, []);
 
-  function handleClick(id: string) {
-    navigate(`/exercices/${id}`);
-  }
-
   function handleClickUser(id: string) {
     navigate(`/user/${id}`);
   }
@@ -128,7 +147,7 @@ const AccueilAdmin = () => {
         setMessage("Le badge a bien été créé !");
         setOpenInfo(true);
         getBadges().then((b) => {
-          badges.splice(0, badges.length)
+          badges.splice(0, badges.length);
           setBadges(b);
         });
       })
@@ -139,6 +158,51 @@ const AccueilAdmin = () => {
         setOpen(true);
       });
   };
+
+  const deleteBadgeId = (badge: string) => {
+    deleteBadge(badge)
+      .then((d) => {
+        setOpen2(false);
+        setSeverity("success");
+        setMessage("Le badge a bien été supprimé !");
+        setOpenInfo(true);
+        getBadges().then((b) => {
+          badges.splice(0, badges.length);
+          setBadges(b);
+        });
+      }
+      )
+      .catch((e) => {
+        setOpen2(false);
+        setSeverity("error");
+        setMessage("Une erreur est survenue lors de la suppression du badge");
+        setOpenInfo(true);
+        setOpen2(true);
+      }
+      );
+  }
+
+  const deleteExercice = (exercice: IExerciceModel) => {
+    deleteExerciceById(exercice._id)
+      .then((d) => {
+        setOpen2(false);
+        setSeverity("success");
+        setMessage("L'exercice a bien été supprimé !");
+        setOpenInfo(true);
+        getExerciceByBadgeId(exercice.badges._id).then((e) => {
+          exercices.splice(0, exercices.length);
+          setExercices(e);
+        });
+      }
+      )
+      .catch((e) => {
+        setSeverity("error");
+        setMessage("Une erreur est survenue lors de la suppression de l'exercice");
+        setOpenInfo(true);
+        setOpen2(true);
+      }
+      );
+  }
 
   return (
     <>
@@ -250,7 +314,9 @@ const AccueilAdmin = () => {
                               alt={badges[index].name}
                               src={badges[index].image}
                               sx={{ width: 56, height: 56, margin: "auto" }}
-                              onClick={() => handleClick(badges[index]._id)}
+                              onClick={() =>
+                                handleClickOpen2(badges[index]._id)
+                              }
                             />
                           </Badge>
                         ) : (
@@ -258,7 +324,7 @@ const AccueilAdmin = () => {
                             alt={badges[index].name}
                             src={badges[index].image}
                             sx={{ width: 56, height: 56, margin: "auto" }}
-                            onClick={() => handleClick(badges[index]._id)}
+                            onClick={() => handleClickOpen2(badges[index]._id)}
                           />
                         )}
                         <p>{badges[index].name}</p>
@@ -282,38 +348,126 @@ const AccueilAdmin = () => {
               >
                 Ajouter
               </Button>
+              <Dialog open={open2} onClose={handleClose2}>
+                {/* permet de voir les exercice d'un badge de le delete et dans rajouter mais aussi un boutton pour delete le badge */}
+                <DialogTitle>Exercices</DialogTitle>
+                <DialogContent>
+                  <Grid
+                    container
+                    spacing={{ xs: 2, md: 3 }}
+                    columns={{ xs: 4, sm: 8, md: 12 }}
+                  >
+                    {/* Liste d'exercice avec un boutton delete */}
+                    {exercices.length === 0 ? (
+                      <p>Aucun exercice</p>
+                    ) : (
+                      <TableContainer>
+                        <Table
+                          aria-label="simple table"
+                        >
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Exercice</TableCell>
+                              <TableCell>Consigne</TableCell>
+                              <TableCell>Supprimer</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          <TableBody>
+                            {exercices.map((_, index) => (
+                              <TableRow
+                                key={index}
+                                sx={{
+                                  "&:last-child td, &:last-child th": {
+                                    border: 0,
+                                  },
+                                }}
+                              >
+                                <TableCell component="th" scope="row">
+                                  {exercices[index].name}
+                                </TableCell>
+                                <TableCell>
+                                  {exercices[index].statement}
+                                </TableCell>
+                                <TableCell>
+                                  <IconButton aria-label="delete" onClick={() => {deleteExercice(exercices[index])}}>
+                                    <DeleteIcon />
+                                  </IconButton>
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                          </TableBody>
+                        </Table>
+                      </TableContainer>
+                    )}
+                  </Grid>
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#db1144",
+                      color: "#ffffff",
+                      marginTop: "6vh",
+                      "&:hover": {
+                        backgroundColor: "#ffffff",
+                        color: "#db1144",
+                      },
+                    }}
+                    onClick={handleClose2}
+                  >
+                    Fermer
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    sx={{
+                      backgroundColor: "#db1144",
+                      color: "#ffffff",
+                      marginTop: "6vh",
+                      "&:hover": {
+                        backgroundColor: "#ffffff",
+                        color: "#db1144",
+                      },
+                    }}
+                    onClick={handleClose2}
+                  >
+                    Creer un exercice
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    onClick={() => {deleteBadgeId(badgeID)}}
+                    sx={{
+                      backgroundColor: "#db1144",
+                      color: "#ffffff",
+                      marginTop: "6vh",
+                      "&:hover": {
+                        backgroundColor: "#ffffff",
+                        color: "#db1144",
+                      },
+                    }}
+                  >
+                    Supprimer le badge
+                  </Button>
+                </DialogActions>
+              </Dialog>
               <Dialog open={open} onClose={handleClose}>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <DialogTitle>Creer un badge</DialogTitle>
                   <DialogContent>
-                    {/* <FormControl
-                      variant="standard"
-                      sx={{ minWidth: 120, marginTop: "20px" }}
-                      color="error"
-                    >
-                      <InputLabel id="langageID">Langage</InputLabel>
-                      <Select
-                        labelId="langageID"
-                        id="langage"
-                        // value={selectLanguage}
-                        onChange={handleChange}
-                        label="Langage"
-                        color="error"
-                      >
-                        {languages.map((_, index) => (
-                          <MenuItem value={languages[index].name}>
-                            {languages[index].name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl> */}
                     <FormGroup>
-                    {languages.map((_, index) => (
-                          <FormControlLabel
-                          control={<Checkbox onChange={handleChange} value={languages[index]._id}/>}
+                      {languages.map((_, index) => (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              onChange={handleChange}
+                              value={languages[index]._id}
+                            />
+                          }
                           label={languages[index].name}
                         />
-                        ))}
+                      ))}
                     </FormGroup>
                     <TextField
                       {...register("name")}
