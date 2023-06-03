@@ -72,6 +72,11 @@ const AccueilAdmin = () => {
     setOpen2(false);
   };
 
+  function handleClick(id: string) {
+    console.log(id);
+    navigate(`/create-exercice/${id}`);
+  }
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -430,7 +435,7 @@ const AccueilAdmin = () => {
                         color: "#db1144",
                       },
                     }}
-                    onClick={handleClose2}
+                    onClick={() => {handleClick(badgeID)}}
                   >
                     Creer un exercice
                   </Button>

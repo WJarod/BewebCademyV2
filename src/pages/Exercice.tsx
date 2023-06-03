@@ -27,7 +27,7 @@ const Exercice = () => {
   const [badges, setbadge] = useState<IBadgesModel>();
   const [allBadges, setAllBadges] = useState<IBadgesModel[]>([]);
   const [currentExercice, setcurrentExercice] = useState(0);
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success" as AlertColor);
   const navigate = useNavigate();
