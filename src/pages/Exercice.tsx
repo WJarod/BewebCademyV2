@@ -42,8 +42,11 @@ const Exercice = () => {
     setlanguage(event.target.value);
   };
 
-  const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
       return;
     }
 
@@ -120,15 +123,15 @@ const Exercice = () => {
   // valider l'exercice
   const validateExercice = () => {
     if (replaceCode(srcDoc) === exercice[currentExercice]?.result) {
-    session.exercices.push(exercice[currentExercice]);
-    localStorage.setItem("session", JSON.stringify(session));
-    setSeverity("success");
-    setMessage("Bravo, vous avez réussi l'exercice !");
-    setOpen(true);
-    sethtml("");
-    setcss("");
-    setjavascript("");
-    setcurrentExercice(currentExercice + 1);
+      session.exercices.push(exercice[currentExercice]);
+      localStorage.setItem("session", JSON.stringify(session));
+      setSeverity("success");
+      setMessage("Bravo, vous avez réussi l'exercice !");
+      setOpen(true);
+      sethtml("");
+      setcss("");
+      setjavascript("");
+      setcurrentExercice(currentExercice + 1);
     } else {
       setSeverity("error");
       setMessage("Désolé, vous n'avez pas réussi l'exercice !");
@@ -136,10 +139,49 @@ const Exercice = () => {
     }
   };
 
+  const showErrors = () => {
+    let result = exercice[currentExercice]?.result;
+    let code = replaceCode(srcDoc);
+    let resultReverse = "";
+    let codeReverse = "";
+    console.log(result);
+    console.log(code);
+    let errorReverse = "";
+    // reverse code et le resultat pour voir les erreurs a la fin
+    resultReverse = result.split("").reverse().join("");
+    codeReverse = code.split("").reverse().join("");
+    for (let i = 0; i < resultReverse.length; i++) {
+      //break si le resultat est egal a la solution
+      if (resultReverse[i] !== codeReverse[i]) {
+        errorReverse += resultReverse[i];
+      }
+    }
+    // reverse errorReverse pour avoir les erreurs dans l'ordre
+    errorReverse = errorReverse.split("").reverse().join("");
+    //verifier le debut du result et de errorReverse pour voir si il y a des erreurs au debut
+    let error = "";
+    for (let i = 0; i < errorReverse.length; i++) {
+      if (result[i] !== code[i]) {
+        error += result[i];
+      }
+    }
+    console.log(error);
+
+    //informet l'utilisateur des erreurs
+    setSeverity("error");
+    setMessage("Vous avez fait des erreurs, il vous manque : " + error);
+    setOpen(true);
+  };
+
   return (
     <Box sx={{ width: "100%", backgroundColor: "#1d1d1b", color: "white" }}>
-      <Snackbar open={open} autoHideDuration={8000} onClose={handleClose} anchorOrigin={{vertical: "top", horizontal:"center"}}>
-        <Alert severity={severity} sx={{ width: '100%' }} onClose={handleClose}>
+      <Snackbar
+        open={open}
+        autoHideDuration={8000}
+        onClose={handleClose}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert severity={severity} sx={{ width: "100%" }} onClose={handleClose}>
           {message}
         </Alert>
       </Snackbar>
@@ -229,7 +271,7 @@ const Exercice = () => {
             <Grid container spacing={1}>
               <Grid xs={6}>
                 <Box sx={{ width: "100%" }}>
-                  <Box sx={{ height: "69.5vh", backgroundColor:"white"}}>
+                  <Box sx={{ height: "69.5vh", backgroundColor: "white" }}>
                     <iframe
                       srcDoc={srcDoc}
                       title="output"
@@ -313,23 +355,46 @@ const Exercice = () => {
                       </Grid>
                       <Grid xs={6}>
                         <Box>
-                          <Button
-                            variant="contained"
-                            sx={{
-                              backgroundColor: "#db1144",
-                              color: "#ffffff",
-                              marginTop: "2vh",
-                              "&:hover": {
-                                backgroundColor: "#ffffff",
-                                color: "#db1144",
-                              },
-                            }}
-                            onClick={() => {
-                              validateExercice();
-                            }}
-                          >
-                            Valider
-                          </Button>
+                          <Grid container spacing={2}>
+                            <Grid xs={12}>
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  backgroundColor: "#db1144",
+                                  color: "#ffffff",
+                                  marginTop: "2vh",
+                                  "&:hover": {
+                                    backgroundColor: "#ffffff",
+                                    color: "#db1144",
+                                  },
+                                }}
+                                onClick={() => {
+                                  showErrors();
+                                }}
+                              >
+                                Afficher les erreurs
+                              </Button>
+                            </Grid>
+                            <Grid xs={12}>
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  backgroundColor: "#db1144",
+                                  color: "#ffffff",
+                                  marginTop: "2vh",
+                                  "&:hover": {
+                                    backgroundColor: "#ffffff",
+                                    color: "#db1144",
+                                  },
+                                }}
+                                onClick={() => {
+                                  validateExercice();
+                                }}
+                              >
+                                Valider
+                              </Button>
+                            </Grid>
+                          </Grid>
                         </Box>
                       </Grid>
                     </Grid>
