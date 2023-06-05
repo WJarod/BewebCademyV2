@@ -32,9 +32,7 @@ const Accueil = () => {
     getBadges().then((badges) => {
       setBadges(badges);
     });
-    getUsers().then((users) => {
-      setUser(users[1]);
-    });
+    setUser(session.user);
   }, []);
 
   function handleClick(id: string) {

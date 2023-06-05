@@ -74,7 +74,6 @@ const User = () => {
         return false;
     }
 
-    
     if (session!.badges.find((badges) => badges._id === badge._id)) {
       return true;
     } else {
@@ -150,7 +149,7 @@ const User = () => {
                 spacing={{ xs: 2, md: 3 }}
                 columns={{ xs: 4, sm: 8, md: 12 }}
               >
-                {badges.length === 0 ? (
+                { badges === undefined || badges.length === 0 || session === undefined ? (
                   <CircularProgress sx={{ margin: "auto" }} />
                 ) : (
                   badges.map((_, index) => (
