@@ -11,6 +11,7 @@ import Login from './pages/auth/Login';
 import Accueil from './pages/Accueil';
 import AccueilAdmin from './pages/AccueilAdmin';
 import CreateExercice from './pages/CreateExe';
+import User from './pages/User';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
           <Route path='/admin' element={<Page><AccueilAdmin/></Page>} />
           <Route path="/exercices/:badgeID" element={<Exercice />} />
           <Route path="/create-exercice/:badgeID" element={<CreateExercice/>} />
+          <Route path="/user/:userID" element={<Page><User/></Page>} />
         </Routes>
         </React.StrictMode>
       </ReactKeycloakProvider>

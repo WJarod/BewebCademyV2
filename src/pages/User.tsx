@@ -6,19 +6,33 @@ import Paper from "@mui/material/Paper";
 import IBadgesModel from "../model/IBadgesModel";
 import IUserModel from "../model/IUserModel";
 import ISessionModel from "../model/ISessionModel";
+import IExerciceModel from "../model/IExerciceModel";
 import { getBadges } from "../services/badges-service";
 import { getUsers } from "../services/keycloak-service";
-import { Avatar, Badge, Button, CircularProgress } from "@mui/material";
+import { getSessionByUserId } from "../services/session-service";
+import {
+  Avatar,
+  Badge,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { set } from "react-hook-form";
 
-const Accueil = () => {
+const User = () => {
   const [badges, setBadges] = useState<IBadgesModel[]>([]);
   const [user, setUser] = useState<IUserModel>();
+  const [session, setSession] = useState<ISessionModel>();
+  const [exercices, setExercices] = useState<IExerciceModel[]>([]);
+  const [exercicesBadge, setExercicesBadge] = useState<IExerciceModel[]>([]);
+  const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
-  let session: ISessionModel = JSON.parse(
-    localStorage.getItem("session") || ""
-  );
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#1d1d1b",
@@ -32,18 +46,36 @@ const Accueil = () => {
     getBadges().then((badges) => {
       setBadges(badges);
     });
-    getUsers().then((users) => {
-      setUser(users[1]);
+    const url = window.location.href;
+    const id = url.substring(url.lastIndexOf("/") + 1);
+    getSessionByUserId(id).then((session) => {
+      setSession(session);
+      setUser(session.user);
+      setExercices(session.exercices);
     });
   }, []);
 
-  function handleClick(id: string) {
-    console.log(id);
-    navigate(`/exercices/${id}`);
-  }
+  const handleClose = () => {
+    setOpen(false);
+    setExercicesBadge([]);
+  };
+
+  const handleOpen = (id: string) => {
+    exercices.map((exercice) => {
+      if (exercice.badges._id === id) {
+        exercicesBadge.push(exercice);
+      }
+    });
+    setOpen(true);
+  };
 
   function checkBadge(badge: IBadgesModel) {
-    if (session.badges.find((badges) => badges._id === badge._id)) {
+    if (session!.badges === undefined) {
+        return false;
+    }
+
+    
+    if (session!.badges.find((badges) => badges._id === badge._id)) {
       return true;
     } else {
       return false;
@@ -57,7 +89,30 @@ const Accueil = () => {
           <Grid xs={1}></Grid>
           <Grid xs={4}>
             <Item sx={{ height: "55vh" }}>
-              <h1>Profil</h1>
+              {/* ligne avec le bouton et le titre */}
+              <Box sx={{ flexGrow: 1 }}>
+                <Grid container spacing={2}>
+                  <Grid xs={1}>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#db1144",
+                        color: "#ffffff",
+                        "&:hover": {
+                          backgroundColor: "#ffffff",
+                          color: "#db1144",
+                        },
+                      }}
+                      onClick={() => navigate("/admin")}
+                    >
+                      <ArrowBackIcon />
+                    </Button>
+                  </Grid>
+                  <Grid xs={11} sx={{ marginLeft: "-2.5vh" }}>
+                    <h1>Profil</h1>
+                  </Grid>
+                </Grid>
+              </Box>
               <Avatar
                 alt={user?.username}
                 sx={{ width: 80, height: 80, margin: "auto", marginTop: "6vh" }}
@@ -111,7 +166,7 @@ const Accueil = () => {
                               alt={badges[index].name}
                               src={badges[index].image}
                               sx={{ width: 56, height: 56, margin: "auto"}}
-                              onClick={() => handleClick(badges[index]._id)}
+                              onClick={() => handleOpen(badges[index]._id)}
                             />
                           </Badge>
                         ) : (
@@ -119,7 +174,7 @@ const Accueil = () => {
                             alt={badges[index].name}
                             src={badges[index].image}
                             sx={{ width: 56, height: 56, margin: "auto" }}
-                            onClick={() => handleClick(badges[index]._id)}
+                            onClick={() => handleOpen(badges[index]._id)}
                           />
                         )}
                         <p>{badges[index].name}</p>
@@ -132,9 +187,35 @@ const Accueil = () => {
           </Grid>
           <Grid xs={1}></Grid>
         </Grid>
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Exercices finis</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              {exercicesBadge.map((exercice) => (
+                <p>{exercice.name}</p>
+              ))}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button
+              onClick={() => handleClose()}
+              variant="contained"
+              sx={{
+                backgroundColor: "#db1144",
+                color: "#ffffff",
+                "&:hover": {
+                  backgroundColor: "#ffffff",
+                  color: "#db1144",
+                },
+              }}
+            >
+              Fermer
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </>
   );
 };
 
-export default Accueil;
+export default User;

@@ -37,7 +37,7 @@ import {
   TableRow,
   TextField,
 } from "@mui/material";
-import { set, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
 const AccueilAdmin = () => {
@@ -69,6 +69,7 @@ const AccueilAdmin = () => {
   };
 
   const handleClose2 = () => {
+    setExercices([]);
     setOpen2(false);
   };
 

@@ -5,13 +5,11 @@ import Editor from "@monaco-editor/react";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
 import FormControl from "@mui/material/FormControl";
-import IExerciceModel from "../model/IExerciceModel";
 import IBadgesModel from "../model/IBadgesModel";
 import { styled } from "@mui/system";
 import { getBadgeById } from "../services/badges-service";
 import { Alert, AlertColor, Button, Snackbar, TextField } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import QuestionMarkIcon from "@mui/icons-material/QuestionMark";
 import ISessionModel from "../model/ISessionModel";
 import IDraftModel from "../model/IDraftModel";
 import { useNavigate } from "react-router-dom";
@@ -105,25 +103,6 @@ const CreateExercice = () => {
     background: "white";
   `
   );
-
-  // valider l'exercice
-  //   const validateExercice = () => {
-  //     if (replaceCode(srcDoc) === exercice[currentExercice]?.result) {
-  //     session.exercices.push(exercice[currentExercice]);
-  //     localStorage.setItem("session", JSON.stringify(session));
-  //     setSeverity("success");
-  //     setMessage("Bravo, vous avez réussi l'exercice !");
-  //     setOpen(true);
-  //     sethtml("");
-  //     setcss("");
-  //     setjavascript("");
-  //     setcurrentExercice(currentExercice + 1);
-  //     } else {
-  //       setSeverity("error");
-  //       setMessage("Désolé, vous n'avez pas réussi l'exercice !");
-  //       setOpen(true);
-  //     }
-  //   };
 
   const onSubmit = async (data: any) => {
     const result = replaceCode(srcDoc);
