@@ -125,20 +125,6 @@ const User = () => {
                 <p>Nom : {user?.lastName}</p>
                 <p>Mail : {user?.email}</p>
               </Box>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "#db1144",
-                  color: "#ffffff",
-                  marginTop: "6vh",
-                  "&:hover": {
-                    backgroundColor: "#ffffff",
-                    color: "#db1144",
-                  },
-                }}
-              >
-                Modifier
-              </Button>
             </Item>
           </Grid>
           <Grid xs={6}>

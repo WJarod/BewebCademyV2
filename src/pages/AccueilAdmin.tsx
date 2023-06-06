@@ -8,10 +8,18 @@ import IUserModel from "../model/IUserModel";
 import ISessionModel from "../model/ISessionModel";
 import ILanguageModel from "../model/ILanguageModel";
 import IExerciceModel from "../model/IExerciceModel";
-import { getBadges, createBadge, deleteBadge } from "../services/badges-service";
-import { getSessions } from "../services/session-service";
+import {
+  getBadges,
+  createBadge,
+  deleteBadge,
+} from "../services/badges-service";
+import { getSessions, updateSession } from "../services/session-service";
 import { getLanguages } from "../services/language-service";
-import { getExerciceByBadgeId, deleteExerciceById } from "../services/exercice-service";
+import {
+  getExerciceByBadgeId,
+  deleteExerciceById,
+} from "../services/exercice-service";
+import { updateUser } from "../services/keycloak-service";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
   Alert,
@@ -51,6 +59,7 @@ const AccueilAdmin = () => {
   const navigate = useNavigate();
   const [open, setOpen] = React.useState(false);
   const [open2, setOpen2] = React.useState(false);
+  const [open3, setOpen3] = React.useState(false);
   const [openInfo, setOpenInfo] = React.useState(false);
   const [message, setMessage] = useState("");
   const [severity, setSeverity] = useState("success" as AlertColor);
@@ -80,6 +89,10 @@ const AccueilAdmin = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleClose3 = () => {
+    setOpen3(false);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -176,17 +189,15 @@ const AccueilAdmin = () => {
           badges.splice(0, badges.length);
           setBadges(b);
         });
-      }
-      )
+      })
       .catch((e) => {
         setOpen2(false);
         setSeverity("error");
         setMessage("Une erreur est survenue lors de la suppression du badge");
         setOpenInfo(true);
         setOpen2(true);
-      }
-      );
-  }
+      });
+  };
 
   const deleteExercice = (exercice: IExerciceModel) => {
     deleteExerciceById(exercice._id)
@@ -199,15 +210,32 @@ const AccueilAdmin = () => {
           exercices.splice(0, exercices.length);
           setExercices(e);
         });
-      }
-      )
+      })
       .catch((e) => {
         setSeverity("error");
-        setMessage("Une erreur est survenue lors de la suppression de l'exercice");
+        setMessage(
+          "Une erreur est survenue lors de la suppression de l'exercice"
+        );
         setOpenInfo(true);
         setOpen2(true);
-      }
+      });
+  };
+
+  function updateUserById(data: any) {
+    data.id = session.user.id;
+    console.log(data);
+    updateUser(session.user.id, data).then((user) => {
+      console.log(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      let localSession: ISessionModel = JSON.parse(
+        localStorage.getItem("session") || ""
       );
+      localSession.user = data;
+      updateSession(session._id, session).then((session) => {
+        localStorage.setItem("session", JSON.stringify(localSession));
+      });
+      setOpen(false);
+    });
   }
 
   return (
@@ -281,6 +309,7 @@ const AccueilAdmin = () => {
                 <p>Mail : {user?.email}</p>
               </Box>
               <Button
+                onClick={() => setOpen3(true)}
                 variant="contained"
                 sx={{
                   backgroundColor: "#db1144",
@@ -368,9 +397,7 @@ const AccueilAdmin = () => {
                       <p>Aucun exercice</p>
                     ) : (
                       <TableContainer>
-                        <Table
-                          aria-label="simple table"
-                        >
+                        <Table aria-label="simple table">
                           <TableHead>
                             <TableRow>
                               <TableCell>Exercice</TableCell>
@@ -395,7 +422,12 @@ const AccueilAdmin = () => {
                                   {exercices[index].statement}
                                 </TableCell>
                                 <TableCell>
-                                  <IconButton aria-label="delete" onClick={() => {deleteExercice(exercices[index])}}>
+                                  <IconButton
+                                    aria-label="delete"
+                                    onClick={() => {
+                                      deleteExercice(exercices[index]);
+                                    }}
+                                  >
                                     <DeleteIcon />
                                   </IconButton>
                                 </TableCell>
@@ -436,14 +468,18 @@ const AccueilAdmin = () => {
                         color: "#db1144",
                       },
                     }}
-                    onClick={() => {handleClick(badgeID)}}
+                    onClick={() => {
+                      handleClick(badgeID);
+                    }}
                   >
                     Creer un exercice
                   </Button>
                   <Button
                     type="submit"
                     variant="contained"
-                    onClick={() => {deleteBadgeId(badgeID)}}
+                    onClick={() => {
+                      deleteBadgeId(badgeID);
+                    }}
                     sx={{
                       backgroundColor: "#db1144",
                       color: "#ffffff",
@@ -528,6 +564,93 @@ const AccueilAdmin = () => {
                       }}
                     >
                       Creer
+                    </Button>
+                  </DialogActions>
+                </form>
+              </Dialog>
+              <Dialog open={open3} onClose={handleClose3}>
+                <form onSubmit={handleSubmit(updateUserById)}>
+                  <DialogTitle>Modifier mon profil</DialogTitle>
+                  <DialogContent>
+                    <TextField
+                      {...register("username")}
+                      autoFocus
+                      margin="dense"
+                      defaultValue={user?.username}
+                      id="nom"
+                      label="Pseudo"
+                      type="texte"
+                      fullWidth
+                      variant="standard"
+                      color="error"
+                    />
+                    <TextField
+                      {...register("firstName")}
+                      autoFocus
+                      margin="dense"
+                      defaultValue={user?.firstName}
+                      id="prenom"
+                      label="Prénom"
+                      type="texte"
+                      fullWidth
+                      variant="standard"
+                      color="error"
+                    />
+                    <TextField
+                      {...register("lastName")}
+                      autoFocus
+                      margin="dense"
+                      defaultValue={user?.lastName}
+                      id="nom"
+                      label="Nom"
+                      type="texte"
+                      fullWidth
+                      variant="standard"
+                      color="error"
+                    />
+                    <TextField
+                      {...register("email")}
+                      autoFocus
+                      margin="dense"
+                      defaultValue={user?.email}
+                      id="email"
+                      label="Email"
+                      type="texte"
+                      fullWidth
+                      variant="standard"
+                      color="error"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button
+                      onClick={handleClose3}
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#db1144",
+                        color: "#ffffff",
+                        marginTop: "6vh",
+                        "&:hover": {
+                          backgroundColor: "#ffffff",
+                          color: "#db1144",
+                        },
+                      }}
+                    >
+                      Annuler
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      sx={{
+                        backgroundColor: "#db1144",
+                        color: "#ffffff",
+                        marginTop: "6vh",
+                        "&:hover": {
+                          backgroundColor: "#ffffff",
+                          color: "#db1144",
+                        },
+                      }}
+                    >
+                      Modifier
                     </Button>
                   </DialogActions>
                 </form>

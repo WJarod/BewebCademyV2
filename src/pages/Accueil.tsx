@@ -7,18 +7,36 @@ import IBadgesModel from "../model/IBadgesModel";
 import IUserModel from "../model/IUserModel";
 import ISessionModel from "../model/ISessionModel";
 import { getBadges } from "../services/badges-service";
-import { getUsers } from "../services/keycloak-service";
-import { Avatar, Badge, Button, CircularProgress } from "@mui/material";
+import { updateUser } from "../services/keycloak-service";
+import { updateSession } from "../services/session-service";
+import {
+  Avatar,
+  Badge,
+  Button,
+  CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
 
 const Accueil = () => {
   const [badges, setBadges] = useState<IBadgesModel[]>([]);
   const [user, setUser] = useState<IUserModel>();
+  const [open, setOpen] = useState(false);
+  const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
 
   let session: ISessionModel = JSON.parse(
     localStorage.getItem("session") || ""
   );
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: "#1d1d1b",
@@ -48,6 +66,23 @@ const Accueil = () => {
     }
   }
 
+  function updateUserById(data: any) {
+    data.id = session.user.id;
+    console.log(data);
+    updateUser(session.user.id, data).then((user) => {
+      console.log(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      let localSession: ISessionModel = JSON.parse(
+        localStorage.getItem("session") || ""
+      );
+      localSession.user = data;
+      updateSession(session._id, session).then((session) => {
+        localStorage.setItem("session", JSON.stringify(localSession));
+      });
+      setOpen(false);
+    });
+  }
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -70,6 +105,7 @@ const Accueil = () => {
                 <p>Mail : {user?.email}</p>
               </Box>
               <Button
+                onClick={() => setOpen(true)}
                 variant="contained"
                 sx={{
                   backgroundColor: "#db1144",
@@ -108,7 +144,7 @@ const Accueil = () => {
                             <Avatar
                               alt={badges[index].name}
                               src={badges[index].image}
-                              sx={{ width: 56, height: 56, margin: "auto"}}
+                              sx={{ width: 56, height: 56, margin: "auto" }}
                               onClick={() => handleClick(badges[index]._id)}
                             />
                           </Badge>
@@ -130,6 +166,93 @@ const Accueil = () => {
           </Grid>
           <Grid xs={1}></Grid>
         </Grid>
+        <Dialog open={open} onClose={handleClose}>
+          <form onSubmit={handleSubmit(updateUserById)}>
+            <DialogTitle>Modifier mon profil</DialogTitle>
+            <DialogContent>
+              <TextField
+                {...register("username")}
+                autoFocus
+                margin="dense"
+                defaultValue={user?.username}
+                id="nom"
+                label="Pseudo"
+                type="texte"
+                fullWidth
+                variant="standard"
+                color="error"
+              />
+              <TextField
+                {...register("firstName")}
+                autoFocus
+                margin="dense"
+                defaultValue={user?.firstName}
+                id="prenom"
+                label="Prénom"
+                type="texte"
+                fullWidth
+                variant="standard"
+                color="error"
+              />
+              <TextField
+                {...register("lastName")}
+                autoFocus
+                margin="dense"
+                defaultValue={user?.lastName}
+                id="nom"
+                label="Nom"
+                type="texte"
+                fullWidth
+                variant="standard"
+                color="error"
+              />
+              <TextField
+                {...register("email")}
+                autoFocus
+                margin="dense"
+                defaultValue={user?.email}
+                id="email"
+                label="Email"
+                type="texte"
+                fullWidth
+                variant="standard"
+                color="error"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={handleClose}
+                variant="contained"
+                sx={{
+                  backgroundColor: "#db1144",
+                  color: "#ffffff",
+                  marginTop: "6vh",
+                  "&:hover": {
+                    backgroundColor: "#ffffff",
+                    color: "#db1144",
+                  },
+                }}
+              >
+                Annuler
+              </Button>
+              <Button
+                type="submit"
+                variant="contained"
+                sx={{
+                  backgroundColor: "#db1144",
+                  color: "#ffffff",
+                  marginTop: "6vh",
+                  "&:hover": {
+                    backgroundColor: "#ffffff",
+                    color: "#db1144",
+                  },
+                }}
+              >
+                Modifier
+              </Button>
+            </DialogActions>
+          </form>
+        </Dialog>
       </Box>
     </>
   );
