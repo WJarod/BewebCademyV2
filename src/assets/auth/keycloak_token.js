@@ -4,7 +4,7 @@ const token = async () => {
   var token = null;
   var data = qs.stringify({
     'username': 'admin',
-    'password': 'BewebCademy',
+    'password': 'admin',
     'grant_type': 'password',
     'client_id': 'react-client'
   });
