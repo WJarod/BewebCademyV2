@@ -3,6 +3,7 @@ import { ReactKeycloakProvider } from '@react-keycloak/web';
 import keycloak from './assets/auth/auth_keycloak.js';
 import './App.css';
 import { Route, Routes } from 'react-router-dom';
+import PrivateRoute from './helpers/PrivateRoute';
 
 //PAGE
 import Page from './components/Page';
@@ -20,11 +21,11 @@ function App() {
         <React.StrictMode>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/home" element={<Page><Accueil/></Page>} />
-          <Route path='/admin' element={<Page><AccueilAdmin/></Page>} />
-          <Route path="/exercices/:badgeID" element={<Exercice />} />
-          <Route path="/create-exercice/:badgeID" element={<CreateExercice/>} />
-          <Route path="/user/:userID" element={<Page><User/></Page>} />
+          <Route path="/home" element={<PrivateRoute><Page><Accueil/></Page></PrivateRoute>} />
+          <Route path='/admin' element={<PrivateRoute roles="formateur"><Page><AccueilAdmin/></Page></PrivateRoute>} />
+          <Route path="/exercices/:badgeID" element={<PrivateRoute roles="formateur"><Exercice /></PrivateRoute>} />
+          <Route path="/create-exercice/:badgeID" element={<PrivateRoute roles="formateur"><CreateExercice/></PrivateRoute>} />
+          <Route path="/user/:userID" element={<PrivateRoute roles="formateur"><Page><User/></Page></PrivateRoute>} />
         </Routes>
         </React.StrictMode>
       </ReactKeycloakProvider>

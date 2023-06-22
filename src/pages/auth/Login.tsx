@@ -18,6 +18,7 @@ const Login = () => {
   const { keycloak, initialized } = useKeycloak();
 
   const checkSession = async () => {
+    console.log("checkSession");
     if (keycloak.authenticated) {
       let user: IUserModel = {
         id: keycloak.tokenParsed?.sub || "",

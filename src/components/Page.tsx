@@ -7,7 +7,6 @@ import Stack from "@mui/material/Stack";
 
 const Page = ({ children }: any) => {
   children === undefined ? (children = <Login />) : (children = children);
-
   return (
     <Stack
   direction="column"

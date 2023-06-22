@@ -14,12 +14,11 @@ const AppBarre = () => {
   const navigate = useNavigate();
   
   const logout = () => {
+    navigate("/")
     localStorage.clear()
     keycloak.logout().then(() => {
       keycloak.clearToken()
       })
-      navigate(`/`);
-
   }
 
   return (
