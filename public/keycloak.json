@@ -1,6 +1,6 @@
 {
     "realm": "Bewebcademy",
-    "auth-server-url": "https://51.83.69.138:8080/auth/",
+    "auth-server-url": "https://51.83.69.138:8080/",
     "ssl-required": "external",
     "resource": "react-client",
     "public-client": true,
