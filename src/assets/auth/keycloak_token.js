@@ -10,7 +10,7 @@ const token = async () => {
   });
   var config = {
     method: 'post',
-    url: 'http://51.83.69.138:8080/auth/realms/Bewebcademy/protocol/openid-connect/token',
+    url: 'http://51.83.69.138:8080/realms/Bewebcademy/protocol/openid-connect/token',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
