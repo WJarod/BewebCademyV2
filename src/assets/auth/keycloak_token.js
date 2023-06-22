@@ -4,13 +4,13 @@ const token = async () => {
   var token = null;
   var data = qs.stringify({
     'username': 'admin',
-    'password': 'admin123',
+    'password': 'BewebCademy',
     'grant_type': 'password',
     'client_id': 'react-client'
   });
   var config = {
     method: 'post',
-    url: 'https://51.83.69.138:8080/realms/Bewebcademy/protocol/openid-connect/token',
+    url: 'http://51.83.69.138:8080/realms/Bewebcademy/protocol/openid-connect/token',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },

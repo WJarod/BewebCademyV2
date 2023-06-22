@@ -8,7 +8,7 @@ export const getUsers = async (): Promise<IUserModel[]> => {
     const access_token = await token();
     var config = {
       method: "get",
-      url: "https://51.83.69.138:8080/admin/realms/Bewebcademy/users/",
+      url: "http://51.83.69.138:8080/admin/realms/Bewebcademy/users/",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
@@ -48,7 +48,7 @@ export const getUser = async (id: string): Promise<IUserModel> => {
     const access_token = await token();
     var config = {
       method: "get",
-      url: "https://51.83.69.138:8080/admin/realms/Bewebcademy/users/",
+      url: "http://51.83.69.138:8080/admin/realms/Bewebcademy/users/",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${access_token}`,
@@ -84,7 +84,7 @@ export const updateUser = async (id: string, user: IUserModel) => {
 
       var config = {
         method: "put",
-        url: "https://51.83.69.138:8080/admin/realms/Bewebcademy/users/" + id,
+        url: "http://51.83.69.138:8080/admin/realms/Bewebcademy/users/" + id,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
@@ -113,7 +113,7 @@ export const deleteUser = async (id: string) => {
     try {
       var config = {
         method: "delete",
-        url: "https://51.83.69.138:8080/admin/realms/Bewebcademy/users/" + id,
+        url: "http://51.83.69.138:8080/admin/realms/Bewebcademy/users/" + id,
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${access_token}`,
