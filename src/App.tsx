@@ -23,7 +23,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/home" element={<PrivateRoute><Page><Accueil/></Page></PrivateRoute>} />
           <Route path='/admin' element={<PrivateRoute roles="formateur"><Page><AccueilAdmin/></Page></PrivateRoute>} />
-          <Route path="/exercices/:badgeID" element={<PrivateRoute roles="formateur"><Exercice /></PrivateRoute>} />
+          <Route path="/exercices/:badgeID" element={<PrivateRoute><Exercice /></PrivateRoute>} />
           <Route path="/create-exercice/:badgeID" element={<PrivateRoute roles="formateur"><CreateExercice/></PrivateRoute>} />
           <Route path="/user/:userID" element={<PrivateRoute roles="formateur"><Page><User/></Page></PrivateRoute>} />
         </Routes>

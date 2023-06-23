@@ -9,6 +9,7 @@ import ISessionModel from "../model/ISessionModel";
 import { getBadges } from "../services/badges-service";
 import { updateUser } from "../services/keycloak-service";
 import { updateSession } from "../services/session-service";
+import { getExerciceByBadgeId } from "../services/exercice-service";
 import {
   Avatar,
   Badge,
